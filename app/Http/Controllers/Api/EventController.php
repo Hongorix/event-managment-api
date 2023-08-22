@@ -18,6 +18,7 @@ class EventController extends Controller
     public function __construct()
     {
         $this->middleware('auth:sanctum')->except(['index', 'show']);
+        $this->authorizeResource(Event::class, 'event');
     }
 
     public function index()
@@ -44,9 +45,6 @@ class EventController extends Controller
         return in_array($relation, $relations);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $event = Event::create([
@@ -62,23 +60,17 @@ class EventController extends Controller
         return new EventResource($this->loadRelationships($event));
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Event $event)
     {
         return new EventResource($this->loadRelationships($event));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Event $event)
     {
         // if (Gate::denies('update-event', $event)) {
         //     abort(403, 'You are mot authorized to update this event.');
         // }
-        $this->authorize('update-event', $event);
+        // $this->authorize('update-event', $event);
 
         $event->update(
             $request->validate([
@@ -92,9 +84,6 @@ class EventController extends Controller
         return new EventResource($this->loadRelationships($event));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Event $event)
     {
         $event->delete();
